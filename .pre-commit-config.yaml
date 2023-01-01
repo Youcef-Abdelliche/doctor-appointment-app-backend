@@ -10,6 +10,8 @@ repos:
     hooks:
       - id: flake8
         exclude: migrations|settings.py
+        args: # arguments to configure black
+          - --max-line-length=88
         stages: [commit]
 
   - repo: https://github.com/PyCQA/isort
