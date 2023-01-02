@@ -18,27 +18,17 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self) -> str:
-        return self.email
+        return f"{self.first_name} {self.last_name}"
 
 
 class Specialization(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self) -> str:
         return self.name
 
 
 class UserProfile(models.Model):
-    # SEX_CHOICES = (("M", "male"), ("F", "female"))
-    # first_name = models.CharField(max_length=255)
-    # last_name = models.CharField(max_length=255)
-    # phone_number = models.CharField(max_length=14)
-    # image = models.ImageField()
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # sex = models.CharField(default="M", choices=SEX_CHOICES, max_length=1)
-
-    # def __str__(self) -> str:
-    #     return f"{self.first_name} {self.last_name}"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:

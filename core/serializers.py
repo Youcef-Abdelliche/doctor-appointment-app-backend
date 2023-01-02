@@ -6,7 +6,17 @@ from .models import Doctor, Specialization, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "sex", "first_name", "last_name"]
+        fields = ["email", "password", "sex", "first_name", "last_name"]
+
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["email", "password", "sex", "first_name", "last_name", "user_type"]
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "user_type": {"write_only": True},
+        }
 
 
 class SpecializationSerializer(serializers.ModelSerializer):
