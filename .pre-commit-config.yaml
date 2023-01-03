@@ -10,7 +10,7 @@ repos:
     hooks:
       - id: flake8
         exclude: migrations|settings.py
-        args: # arguments to configure black
+        args: # arguments to configure flake8
           - --max-line-length=88
         stages: [commit]
 

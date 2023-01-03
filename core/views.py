@@ -1,23 +1,29 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, mixins
 
 from .models import Doctor, Patient, User
 from .serializers import (
-    CreateUpdateDoctorSerializer,
     CreateUpdatePatientSerializer,
     DoctorSerializer,
     PatientSerializer,
-    UserDoctorRegistrationSerializer,
     UserPatientRegisrationSerializer,
 )
 
 
-class DoctorViewSet(ModelViewSet):
-    def get_serializer_class(self):
-        if self.request.method == "GET":
-            return DoctorSerializer
-        elif self.request.method == "POST":
-            return UserDoctorRegistrationSerializer
-        return CreateUpdateDoctorSerializer
+class DoctorViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet,
+):
+
+    serializer_class = DoctorSerializer
+    # def get_serializer_class(self):
+    #     if self.request.method == "GET":
+    #         return DoctorSerializer
+    #     elif self.request.method == "POST":
+    #         return UserDoctorRegistrationSerializer
+    #     return CreateUpdateDoctorSerializer
 
     def get_queryset(self):
         if self.request.method == "GET":

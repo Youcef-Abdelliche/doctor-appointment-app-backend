@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -44,8 +45,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "debug_toolbar",
-    "rest_framework",
     "djoser",
+    "rest_framework",
     "core",
 ]
 
@@ -144,18 +145,17 @@ INTERNAL_IPS = [
 ]
 
 REST_FRAMEWORK = {
+    "COERCE_DECIMAL_TO_STRING": False,
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
 }
 
-SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT",),
-}
+SIMPLE_JWT = {"AUTH_HEADER_TYPES": ("JWT",), "ACCESS_TOKEN_LIFETIME": timedelta(days=1)}
 
 DJOSER = {
-    "LOGIN_FIELD": "email",
+    # "LOGIN_FIELD": "email",
     "SERIALIZERS": {
-        "user_create": "core.serializers.UserRegistrationSerializer",
+        "user_create": "core.serializers.UserCreateSerializer",
     },
 }

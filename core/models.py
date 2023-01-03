@@ -18,7 +18,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("The Email must be set"))
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password("password141998")
+        user.set_password(password)
         user.save()
         return user
 
@@ -78,15 +78,17 @@ class Admin(UserProfile):
 
 
 class Doctor(UserProfile):
-    address = models.CharField(max_length=255)
-    specialization = models.ForeignKey(Specialization, on_delete=models.PROTECT)
+    address = models.CharField(max_length=255, blank=True)
+    specialization = models.ForeignKey(
+        Specialization, null=True, blank=True, on_delete=models.PROTECT
+    )
 
     def __str__(self) -> str:
         return f"{self.user.first_name} {self.user.last_name}"
 
 
 class Patient(UserProfile):
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
 
     def __str__(self) -> str:
