@@ -5,5 +5,6 @@ from . import views
 router = routers.DefaultRouter()
 
 router.register("doctors", views.DoctorViewSet, basename="doctors")
+router.register("patients", views.PatientViewSet, basename="patients")
 
 urlpatterns = router.urls

@@ -2,7 +2,7 @@ from django.db import transaction
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
-from .models import Doctor, Specialization, User
+from .models import Doctor, Patient, Specialization, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -82,3 +82,52 @@ class DoctorSerializer(serializers.ModelSerializer):
         model = Doctor
         fields = ["id", "user", "specialization", "address"]
         read_only_fields = ("specialization",)
+
+
+class PatientSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Patient
+        fields = ["id", "user", "address", "date_of_birth"]
+
+
+class CreateUpdatePatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patient
+        fields = ["date_of_birth", "address"]
+
+
+class UserPatientRegisrationSerializer(serializers.ModelSerializer):
+    patient = CreateUpdatePatientSerializer()
+
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            "password",
+            "sex",
+            "first_name",
+            "last_name",
+            "user_type",
+            "patient",
+        ]
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "user_type": {"read_only": True},
+        }
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            validated_data["user_type"] = 3
+            print(validated_data)
+            patient = validated_data.pop("patient")
+            user = User.objects.create_user(**validated_data)
+            Patient.objects.create(
+                user=user,
+                address=patient["address"],
+                date_of_birth=patient["date_of_birth"],
+            )
+            user.is_active = True
+            user.save(update_fields=["is_active"])
+        return user
