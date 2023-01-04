@@ -1,4 +1,4 @@
-from django.db import transaction
+# from django.db import transaction
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from rest_framework import serializers
 
@@ -11,10 +11,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["email", "password", "sex", "first_name", "last_name"]
 
 
-class CreateUpdateDoctorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Doctor
-        fields = ["specialization", "address"]
+# class CreateUpdateDoctorSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Doctor
+#         fields = ["specialization", "address"]
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
@@ -29,9 +29,9 @@ class UserCreateSerializer(BaseUserCreateSerializer):
             "last_name",
             "user_type",
         ]
-        # extra_kwargs = {
-        #     "password": {"write_only": True},
-        # }
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
 
     # def create(self, validated_data):
     #     with transaction.atomic():
@@ -54,43 +54,43 @@ class SpecializationSerializer(serializers.ModelSerializer):
         fields = ["name"]
 
 
-class UserDoctorRegistrationSerializer(serializers.ModelSerializer):
-    doctor = CreateUpdateDoctorSerializer()
+# class UserDoctorRegistrationSerializer(serializers.ModelSerializer):
+#     doctor = CreateUpdateDoctorSerializer()
 
-    class Meta:
-        model = User
-        fields = [
-            "email",
-            "password",
-            "sex",
-            "first_name",
-            "last_name",
-            "user_type",
-            "doctor",
-        ]
-        extra_kwargs = {
-            "password": {"write_only": True},
-            "user_type": {"read_only": True},
-        }
+#     class Meta:
+#         model = User
+#         fields = [
+#             "email",
+#             "password",
+#             "sex",
+#             "first_name",
+#             "last_name",
+#             "user_type",
+#             "doctor",
+#         ]
+#         extra_kwargs = {
+#             "password": {"write_only": True},
+#             "user_type": {"read_only": True},
+#         }
 
-    def create(self, validated_data):
-        with transaction.atomic():
-            validated_data["user_type"] = 2
-            doctor = validated_data.pop("doctor")
-            user = User.objects.create_user(**validated_data)
-            Doctor.objects.create(
-                user=user,
-                address=doctor["address"],
-                specialization=doctor["specialization"],
-            )
-            user.is_active = True
-            user.save(update_fields=["is_active"])
-        return user
+#     def create(self, validated_data):
+#         with transaction.atomic():
+#             validated_data["user_type"] = 2
+#             doctor = validated_data.pop("doctor")
+#             user = User.objects.create_user(**validated_data)
+#             Doctor.objects.create(
+#                 user=user,
+#                 address=doctor["address"],
+#                 specialization=doctor["specialization"],
+#             )
+#             user.is_active = True
+#             user.save(update_fields=["is_active"])
+#         return user
 
 
 class DoctorSerializer(serializers.ModelSerializer):
-    user_id = serializers.CharField()
-    specialization_id = serializers.CharField()
+    user_id = serializers.IntegerField()
+    specialization_id = serializers.IntegerField()
 
     class Meta:
         model = Doctor
@@ -98,49 +98,50 @@ class DoctorSerializer(serializers.ModelSerializer):
 
 
 class PatientSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    # user = UserSerializer()
+    user_id = serializers.IntegerField()
 
     class Meta:
         model = Patient
-        fields = ["id", "user", "address", "date_of_birth"]
+        fields = ["id", "user_id", "address", "date_of_birth"]
 
 
-class CreateUpdatePatientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Patient
-        fields = ["date_of_birth", "address"]
+# class CreateUpdatePatientSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Patient
+#         fields = ["date_of_birth", "address"]
 
 
-class UserPatientRegisrationSerializer(serializers.ModelSerializer):
-    patient = CreateUpdatePatientSerializer()
+# class UserPatientRegisrationSerializer(serializers.ModelSerializer):
+#     patient = CreateUpdatePatientSerializer()
 
-    class Meta:
-        model = User
-        fields = [
-            "email",
-            "password",
-            "sex",
-            "first_name",
-            "last_name",
-            "user_type",
-            "patient",
-        ]
-        extra_kwargs = {
-            "password": {"write_only": True},
-            "user_type": {"read_only": True},
-        }
+#     class Meta:
+#         model = User
+#         fields = [
+#             "email",
+#             "password",
+#             "sex",
+#             "first_name",
+#             "last_name",
+#             "user_type",
+#             "patient",
+#         ]
+#         extra_kwargs = {
+#             "password": {"write_only": True},
+#             "user_type": {"read_only": True},
+#         }
 
-    def create(self, validated_data):
-        with transaction.atomic():
-            validated_data["user_type"] = 3
-            patient = validated_data.pop("patient")
-            user = User.objects.create_user(is_active=True, **validated_data)
-            Patient.objects.create(
-                user=user,
-                address=patient["address"],
-                date_of_birth=patient["date_of_birth"],
-            )
-            # user.is_active = True
-            # user.save(update_fields=["is_active"])
-            # user.save()
-        return user
+#     def create(self, validated_data):
+#         with transaction.atomic():
+#             validated_data["user_type"] = 3
+#             patient = validated_data.pop("patient")
+#             user = User.objects.create_user(is_active=True, **validated_data)
+#             Patient.objects.create(
+#                 user=user,
+#                 address=patient["address"],
+#                 date_of_birth=patient["date_of_birth"],
+#             )
+#             # user.is_active = True
+#             # user.save(update_fields=["is_active"])
+#             # user.save()
+#         return user
