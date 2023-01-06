@@ -80,7 +80,7 @@ class UserAdmin(BaseUserAdmin):
         "user_type",
         "is_staff",
     )  # is_admin
-    list_filter = ("is_staff",)
+    list_filter = ("is_staff", "sex", "user_type")
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         (
