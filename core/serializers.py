@@ -8,7 +8,7 @@ from .models import Doctor, Patient, Specialization, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "password", "sex", "first_name", "last_name"]
+        fields = ["email", "sex", "first_name", "last_name"]
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):

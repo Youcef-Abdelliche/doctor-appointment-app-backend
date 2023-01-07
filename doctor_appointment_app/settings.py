@@ -157,5 +157,6 @@ DJOSER = {
     # "LOGIN_FIELD": "email",
     "SERIALIZERS": {
         "user_create": "core.serializers.UserCreateSerializer",
+        "current_user": "core.serializers.UserSerializer",
     },
 }
