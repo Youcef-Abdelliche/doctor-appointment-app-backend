@@ -4,7 +4,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from core.models import Patient
-from core.serializers import PatientSerializer
+from core.serializers import PatientSerializer, UpdatePatientSerializer
 
 client = APIClient()
 
@@ -38,7 +38,7 @@ def test_update_patient(patient):
     patient.address = address
     patient.date_of_birth = date_of_birth
 
-    expected_data = PatientSerializer(patient).data
+    expected_data = UpdatePatientSerializer(patient).data
     response = client.patch(
         f"/core/patients/{patient.pk}/",
         dict(address=address, date_of_birth=date_of_birth),

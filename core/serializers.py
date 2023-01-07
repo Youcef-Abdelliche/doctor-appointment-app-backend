@@ -11,12 +11,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["email", "password", "sex", "first_name", "last_name"]
 
 
-# class CreateUpdateDoctorSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Doctor
-#         fields = ["specialization", "address"]
-
-
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta:
         model = User
@@ -97,8 +91,15 @@ class DoctorSerializer(serializers.ModelSerializer):
         fields = ["id", "user_id", "specialization_id", "address"]
 
 
+class UpdateDoctorSerializer(serializers.ModelSerializer):
+    specialization_id = serializers.IntegerField()
+
+    class Meta:
+        model = Doctor
+        fields = ["specialization_id", "address"]
+
+
 class PatientSerializer(serializers.ModelSerializer):
-    # user = UserSerializer()
     user_id = serializers.IntegerField()
 
     class Meta:
@@ -106,10 +107,10 @@ class PatientSerializer(serializers.ModelSerializer):
         fields = ["id", "user_id", "address", "date_of_birth"]
 
 
-# class CreateUpdatePatientSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Patient
-#         fields = ["date_of_birth", "address"]
+class UpdatePatientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patient
+        fields = ["address", "date_of_birth"]
 
 
 # class UserPatientRegisrationSerializer(serializers.ModelSerializer):
