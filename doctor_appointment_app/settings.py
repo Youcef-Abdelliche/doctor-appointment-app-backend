@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework",
     "core",
+    "appointment",
 ]
 
 MIDDLEWARE = [
@@ -151,7 +152,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-SIMPLE_JWT = {"AUTH_HEADER_TYPES": ("JWT",), "ACCESS_TOKEN_LIFETIME": timedelta(days=1)}
+SIMPLE_JWT = {"AUTH_HEADER_TYPES": ("JWT",), "ACCESS_TOKEN_LIFETIME": timedelta(days=3)}
 
 DJOSER = {
     # "LOGIN_FIELD": "email",
