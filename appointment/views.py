@@ -5,12 +5,17 @@ from .serializers import (
     AppointmentSerializer,
     SessionSerializer,
     UpdateAppointmentSerializer,
+    UpdateSessionSerializer,
 )
 
 
 class SessionViewSet(ModelViewSet):
     queryset = Session.objects.all()
-    serializer_class = SessionSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ["PUT", "PATCH"]:
+            return UpdateSessionSerializer
+        return SessionSerializer
 
 
 class AppointmentViewSet(ModelViewSet):

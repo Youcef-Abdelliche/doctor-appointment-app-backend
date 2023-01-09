@@ -21,6 +21,14 @@ class SessionSerializer(serializers.ModelSerializer):
         return session
 
 
+class UpdateSessionSerializer(serializers.ModelSerializer):
+    doctor_id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Session
+        fields = ["doctor_id", "date", "starts_at", "ends_at"]
+
+
 class AppointmentSerializer(serializers.ModelSerializer):
     session_id = serializers.IntegerField()
     patient_id = serializers.IntegerField()
@@ -48,6 +56,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
 class UpdateAppointmentSerializer(serializers.ModelSerializer):
+    session_id = serializers.ReadOnlyField()
+
     class Meta:
         model = Appointment
-        fields = ["id", "starts_at", "ends_at", "description"]
+        fields = ["session_id", "starts_at", "ends_at", "description"]
