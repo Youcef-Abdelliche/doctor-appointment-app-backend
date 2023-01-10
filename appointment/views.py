@@ -26,3 +26,15 @@ class AppointmentViewSet(ModelViewSet):
         if self.request.method in ["PUT", "PATCH"]:
             return UpdateAppointmentSerializer
         return AppointmentSerializer
+
+
+# class DoctorAppointmentViewSet(
+#         mixins.ListModelMixin,
+#         mixins.RetrieveModelMixin,
+#         GenericAPIView):
+
+#     serializer_class = AppointmentSerializer
+
+#     def get_queryset(self):
+#         return Appointment.objects.filter(
+# session__doctor__user_id=self.request.user.pk).all()
