@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser as IsStaffUser
 from rest_framework.permissions import IsAuthenticated
@@ -43,18 +44,10 @@ class SessionViewSet(ModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
-    # def get_permissions(self):
-    #     if self.action in ["my_sessions"]:
-    #         permission_classes = [IsDoctor]
-    #     elif self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
-    #         return [IsStaffUser]
-    #     else:
-    #         permission_classes = [IsAuthenticated]
-    #     return [permission() for permission in permission_classes]
-
 
 class AppointmentViewSet(ModelViewSet):
 
+    http_method_names = ["post", "get", "delete"]
     queryset = Appointment.objects.all()
 
     def get_serializer_class(self):
@@ -67,6 +60,13 @@ class AppointmentViewSet(ModelViewSet):
             return {"user_id": self.request.user.pk}
         return super().get_serializer_context()
 
+    def get_permissions(self):
+        if self.action in ["all_appointments"]:
+            permission_classes = [IsDoctor]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
     def list(self, request, *args, **kwargs):
         user_id = request.user.pk
         appointments = Appointment.objects.filter(patient_id=user_id).all()
@@ -75,13 +75,21 @@ class AppointmentViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         user_id = request.user.pk
-        appointments = get_object_or_404(
+        appointment = get_object_or_404(
             Appointment.objects.all(), patient_id=user_id, id=kwargs["pk"]
         )
-        serializer = AppointmentSerializer(appointments)
+        serializer = AppointmentSerializer(appointment)
         return Response(serializer.data)
 
-    @action(["get"], detail=False, permission_classes=[IsDoctor])
+    def destroy(self, request, *args, **kwargs):
+        user_id = request.user.pk
+        appointment = get_object_or_404(
+            Appointment.objects.all(), patient_id=user_id, id=kwargs["pk"]
+        )
+        appointment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(["get"], detail=False)
     def all_appointments(self, request):
         user_id = request.user.pk
         my_appointments = Appointment.objects.filter(session__doctor_id=user_id).all()
