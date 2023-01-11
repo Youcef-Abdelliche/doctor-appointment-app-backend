@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, mixins
 
 from .models import Doctor, Patient
-from .permissions import DoctorAccessPermission
+from .permissions import IsDoctor
 from .serializers import (
     DoctorSerializer,
     PatientSerializer,
@@ -52,7 +52,7 @@ class PatientViewSet(
 
     def get_permissions(self):
         if self.action == "list":
-            permission_classes = [DoctorAccessPermission]
+            permission_classes = [IsDoctor]
         else:
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]

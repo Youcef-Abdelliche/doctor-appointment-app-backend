@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from core.models import Doctor, Patient
+from core.models import Doctor
 
 from .models import Appointment, Session
 
@@ -31,7 +31,7 @@ class UpdateSessionSerializer(serializers.ModelSerializer):
 
 class AppointmentSerializer(serializers.ModelSerializer):
     session_id = serializers.IntegerField()
-    patient_id = serializers.IntegerField()
+    patient_id = serializers.ReadOnlyField()
 
     class Meta:
         model = Appointment
@@ -45,12 +45,13 @@ class AppointmentSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        user_id = validated_data.pop("patient_id")
+        # user_id = validated_data.pop("patient_id")
+        user_id = self.context["user_id"]
         session_id = validated_data.pop("session_id")
-        patient = get_object_or_404(Patient.objects.all(), user_id=user_id)
+        # patient = get_object_or_404(Patient.objects.all(), user_id=user_id)
         session = get_object_or_404(Session.objects.all(), pk=session_id)
         appointment = Appointment.objects.create(
-            patient_id=patient.user_id, session_id=session.pk, **validated_data
+            patient_id=user_id, session_id=session.pk, **validated_data
         )
         return appointment
 
@@ -61,3 +62,11 @@ class UpdateAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = ["session_id", "starts_at", "ends_at", "description"]
+
+
+class SessionAppointmentSerializer(serializers.ModelSerializer):
+    appointment_set = AppointmentSerializer(many=True)
+
+    class Meta:
+        model = Session
+        fields = ["id", "doctor", "date", "starts_at", "ends_at", "appointment_set"]
