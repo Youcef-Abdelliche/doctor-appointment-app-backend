@@ -90,7 +90,7 @@ class AppointmentViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(["get"], detail=False)
-    def all_appointments(self, request):
+    def doctor_appointments(self, request):
         user_id = request.user.pk
         my_appointments = Appointment.objects.filter(session__doctor_id=user_id).all()
         serializer = self.get_serializer(my_appointments, many=True)
