@@ -1,6 +1,8 @@
 from datetime import date, time
 
 import pytest
+from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from appointment.models import Appointment, Session
 from core.models import User
@@ -30,6 +32,14 @@ def patient():
         user_type=3,
     )
     return user
+
+
+@pytest.fixture
+def api_client(doctor):
+    refresh = RefreshToken.for_user(doctor)
+    client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"JWT {refresh.access_token}")
+    return client
 
 
 @pytest.fixture

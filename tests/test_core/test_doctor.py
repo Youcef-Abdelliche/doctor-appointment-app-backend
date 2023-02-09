@@ -1,4 +1,6 @@
 import pytest
+
+# from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
 from core.models import Doctor, Specialization
@@ -8,9 +10,10 @@ client = APIClient()
 
 
 @pytest.mark.django_db
-def test_list_doctor(doctor):
+def test_list_doctor(api_client, doctor):
     count = Doctor.objects.all().count()
-    response = client.get("/core/doctors/")
+    # headers = {"HTTP_AUTHORIZATION": f"JWT {Token.key}"}
+    response = api_client.get("/core/doctors/")
 
     assert response.status_code == 200
     assert count == 1
